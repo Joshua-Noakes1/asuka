@@ -1,1 +1,1 @@
-# QADTool
+# QADT
