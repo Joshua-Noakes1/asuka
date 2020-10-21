@@ -64,7 +64,7 @@ goto Prog
 :Essentials
 cls
 echo Downloading
-powershell -command "iwr -outf dl_ess.zip https://cdn.joshuanoakes.co.uk/cdn/dl/dl_ess.zip"
+powershell -command "iwr -outf dl_ess.zip https://cdn.joshuanoakes.co.uk/cdn/dl/dl_ess.tx"
 echo Download complete 
 powershell -command "Expand-Archive 'dl_ess.zip' 'dl_ess\'"
 del dl_ess.zip
