@@ -1,6 +1,5 @@
 :: Asuka - https://github.com/joshua-noakes1/asuka
 @echo off
-setlocal EnableDelayedExpansion
 
 :: set environment variables for Asuka
 set ASUKA_HOME=C:\Users\%USERNAME%\AppData\Local\asuka
@@ -33,16 +32,17 @@ if not %CURRENT_VERSION%==%VERSION% (
 cd "C:\Users\%USERNAME%\AppData\Local\asuka"
 cls
 echo ------------------------------------------------------------------
-echo    “If you’ve lived long enough, you learn to live with death…”
+echo    "If you've lived long enough, you learn to live with death"
 echo        - Asuka Langley.
 echo ------------------------------------------------------------------
 echo:
 echo 1. Launch Powershell
 echo:
+echo 98. Reset Asuka
 echo 99. Exit
 echo:
 set /P CHOICE=Type option: 
-if !CHOICE!==1 (
+if %CHOICE%==1 (
     :: check if powershellv7 is installed - https://github.com/PowerShell/PowerShell/releases/download/v7.2.1/PowerShell-7.2.1-win-x64.zip
     cls
 
@@ -50,37 +50,30 @@ if !CHOICE!==1 (
     if not exist "C:\Users\%USERNAME%\AppData\Local\asuka\ps7" (
         mkdir "C:\Users\%USERNAME%\AppData\Local\asuka\ps7"
     )
-    if not exist "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh.exe" (
-        call :installpswh
-    )
-    for /f "delims=" %%x in ("C:\Users\%USERNAME%\AppData\Local\asuka\ps7\version.txt") do set PSW_Build=%%x
-    if not !PSW_Build!==%POWERSHELL_VERSION% (
-        echo "Powershell is out of date. Updating to %POWERSHELL_VERSION%"
-        taskkill /f /im pwsh.exe
-        rmdir /s /q "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\"
-        call :installpswh
+    if not exist "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe" (
+        echo "Downloading Powershell %POWERSHELL_VERSION%"
+        curl -sSL -o "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
+        cls
+        echo "Unzipping Powershell %POWERSHELL_VERSION%"
+        call :unzip "C:\Users\%USERNAME%\AppData\Local\asuka\ps7" "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip"
+        del /f "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip"
+        move "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh.exe" "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe"
+        cls
+        echo "Powershell %POWERSHELL_VERSION% has been installed"
     )
 
     :: launch powershell
-    start /d "C:\Users\%USERNAME%\AppData\Local\asuka\" C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh.exe
+    start /d "C:\Users\%USERNAME%\AppData\Local\asuka\" C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe
     goto main
-
-    :: Install / Update Powershell
-    :installpswh
-    echo "Downloading Powershell %POWERSHELL_VERSION%"
-    curl -sSL -o "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
-    cls
-    echo "Unzipping Powershell %POWERSHELL_VERSION%"
-    call :unzip "C:\Users\%USERNAME%\AppData\Local\asuka\ps7" "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip"
-    del "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip"
-    echo %POWERSHELL_VERSION% >> "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\version.txt"
-    cls
-    echo "Powershell %POWERSHELL_VERSION% has been installed"
-    start /d "C:\Users\%USERNAME%\AppData\Local\asuka\" C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh.exe
-    goto main
-    
 )
-if !CHOICE!==99 ( 
+if %CHOICE%==98 (
+    :: kill all instances of Asuka - Nooooo don't turn me into fanta rei, pop- 
+    taskkill /f /im "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe"
+    rmdir /s /q "C:\Users\%USERNAME%\AppData\Local\asuka"
+    mkdir "C:\Users\%USERNAME%\AppData\Local\asuka"
+    goto main
+)
+if %CHOICE%==99 ( 
     cls
     exit /b 0
 )
