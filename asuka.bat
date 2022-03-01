@@ -11,7 +11,7 @@ if not exist "C:\Windows\system32\curl.exe" (
     exit /b 2
 )
 
-:: check if asuka folder exists
+:: Check if asuka folder exists
 if not exist "C:\Users\%USERNAME%\AppData\Local\asuka" (
     mkdir "C:\Users\%USERNAME%\AppData\Local\asuka"
 )
@@ -26,9 +26,22 @@ if not %CURRENT_VERSION%==%VERSION% (
 ) 
 
 :: main menu
+:main
 cd "C:\Users\%USERNAME%\AppData\Local\asuka"
+cls
 echo ------------------------------------------------------------------
 echo    “If you’ve lived long enough, you learn to live with death…”
 echo        - Asuka Langley.
 echo ------------------------------------------------------------------
 echo.
+echo 1. Launch Powershell
+echo.
+echo 99. Exit
+echo.
+set /P CHOICE=Type option: 
+if %CHOICE%==1 start /d "C:\Users\%USERNAME%\AppData\Local\asuka\" C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+if %CHOICE%==99 ( 
+    cls
+    exit /b 0
+)
+goto main
