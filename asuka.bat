@@ -56,6 +56,7 @@ if !CHOICE!==1 (
     for /f "delims=" %%x in ("C:\Users\%USERNAME%\AppData\Local\asuka\ps7\version.txt") do set PSW_Build=%%x
     if not !PSW_Build!==%POWERSHELL_VERSION% (
         echo "Powershell is out of date. Updating to %POWERSHELL_VERSION%"
+        taskkill /f /im pwsh.exe
         rmdir /s /q "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\"
         call :installpswh
     )
