@@ -1,8 +1,9 @@
-name: Create Build
-on: 
+name: Build README.md
+
+on:
   push:
-    branches: ["main"]
-    paths: ["*.bat"]
+    branches:
+      - "main"
 
 jobs: 
   Create_Build:

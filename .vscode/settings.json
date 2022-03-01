@@ -6,5 +6,8 @@
         "markdown",
         "latex",
         "plaintext"
-    ]
+    ],
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": "file:///s%3A/PC/Documents/GitHub/asuka/.github/workflows/build.yml"
+    }
 }
