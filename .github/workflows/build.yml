@@ -1,0 +1,23 @@
+name: Create Build
+on: 
+  push:
+    branches: ["main"]
+    paths: ["*.bat"]
+
+jobs: 
+  Create_Build:
+   runs-on: ubuntu-latest
+   steps:
+    - name: Checkout repository
+      uses: actions/checkout@master
+      with:
+        ref: "main"
+
+    - name: Copy asuka.bat to dist/asuka.png
+      run: cp ./asuka.bat ./dist/asuka.png
+    
+    - name: Commit and Push new README.md to the repository
+      uses: mikeal/publish-to-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH_NAME: "main"
