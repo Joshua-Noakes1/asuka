@@ -3,13 +3,15 @@
 
 :: set environment variables for Asuka
 set ASUKA_HOME=C:\Users\%USERNAME%\AppData\Local\asuka
-set CURRENT_VERSION=0.0.1
+set CURRENT_VERSION=0.0.2
+set VERSION=0.0.2
 set POWERSHELL_VERSION=7.2.1
 
 :: Check for curl at the system level
 if not exist "C:\Windows\system32\curl.exe" (
     :: curl is not found exit
     echo "Curl is not installed on this system. Asuka needs curl to run."
+    pause
     exit /b 2
 )
 
@@ -24,6 +26,7 @@ if not %CURRENT_VERSION%==%VERSION% (
     echo "Asuka is out of date. Updating to %VERSION%"
     curl -sSL -o "asuka.bat" "https://raw.githubusercontent.com/joshua-noakes1/asuka/main/dist/asuka.png" :: bypass fortiguard
     echo "Asuka has been updated. Please run Asuka again."
+    pause
     exit /b 2
 ) 
 
