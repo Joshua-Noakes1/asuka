@@ -3,29 +3,40 @@
 
 :: set environment variables for Asuka
 set ASUKA_HOME=C:\Users\%USERNAME%\AppData\Local\asuka
+set ASUKA_CURL=C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.exe
 set CURRENT_VERSION=0.0.2
 set VERSION=%CURRENT_VERSION%
 set POWERSHELL_VERSION=7.2.1
-title Asuka - %CURRENT_VERSION%
 
-:: Check for curl at the system level
-if not exist "C:\Windows\system32\curl.exe" (
-    :: curl is not found exit
-    echo "Curl is not installed on this system. Asuka needs curl to run."
-    pause
-    exit /b 2
-)
+title Asuka - %CURRENT_VERSION%
 
 :: Check if asuka folder exists
 if not exist "C:\Users\%USERNAME%\AppData\Local\asuka" (
     mkdir "C:\Users\%USERNAME%\AppData\Local\asuka"
 )
 
+:: Check if asuka folder exists
+if not exist "C:\Users\%USERNAME%\AppData\Local\asuka-curl" (
+    mkdir "C:\Users\%USERNAME%\AppData\Local\asuka-curl"
+)
+
+:: Check for curl at the system level
+if not exist "C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.exe" (
+    :: curl is not found using powershell to download curl to the user's local directory
+    echo "Curl is not installed on this system. Downloading..."
+    powershell -command "(New-Object Net.WebClient).DownloadFile('https://curl.se/windows/dl-7.81.0_1/curl-7.81.0_1-win64-mingw.zip', 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip')"
+    powershell -command "Expand-Archive -LiteralPath 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip' 'C:\Users\%USERNAME%\AppData\Local\asuka-curl'"
+    powershell -command "Move-Item -Path 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl-7.81.0-win64-mingw\curl.exe' -Destination 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.exe'"
+    powershell -command "Remove-Item -Path 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip'"
+    echo "Curl has been installed."
+    pause
+)
+
 :: Check for update
 @for /f %%R in ('curl -sSL https://raw.githubusercontent.com/joshua-noakes1/asuka/main/VERSION') do ( Set VERSION=%%R )
 if not %CURRENT_VERSION%==%VERSION% (
     echo "Asuka is out of date. Updating to %VERSION%"
-    curl -kSL -o "asuka.bat" "https://raw.githubusercontent.com/joshua-noakes1/asuka/main/dist/asuka.png" :: bypass fortiguard
+    %ASUKA_CURL% -kSL -o "asuka.bat" "https://raw.githubusercontent.com/joshua-noakes1/asuka/main/dist/asuka.png" :: bypass fortiguard
     echo "Asuka has been updated. Please run Asuka again."
     pause
     exit /b 2
@@ -56,7 +67,7 @@ if %CHOICE%==1 (
     )
     if not exist "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe" (
         echo "Downloading Powershell %POWERSHELL_VERSION%"
-        curl -kSL -o "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
+        %ASUKA_CURL% -kSL -o "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
         cls
         echo "Unzipping Powershell %POWERSHELL_VERSION%"
         powershell -command "Expand-Archive -LiteralPath C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip C:\Users\%USERNAME%\AppData\Local\asuka\ps7 "
