@@ -38,7 +38,7 @@ if not exist "%ASUKA_CURL%" (
 @for /f %%R in ('curl -sSL https://raw.githubusercontent.com/joshua-noakes1/asuka/main/VERSION') do ( Set VERSION=%%R )
 if not %CURRENT_VERSION%==%VERSION% (
     echo "Asuka is out of date. Updating to %VERSION%"
-    %ASUKA_CURL% -kSL -o "asuka.bat" "https://raw.githubusercontent.com/joshua-noakes1/asuka/main/dist/asuka.png" :: bypass fortiguard
+    %ASUKA_CURL% -kSL -o "asuka.bat" "https://raw.githubusercontent.com/joshua-noakes1/asuka/main/dist/asuka.png"
     echo "Asuka has been updated. Please run Asuka again."
     pause
     exit /b 2
