@@ -3,7 +3,7 @@
 
 :: set environment variables for Asuka
 set ASUKA_HOME=C:\Users\%USERNAME%\AppData\Local\asuka
-set ASUKA_CURL=C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.exe
+set ASUKA_CURL=C:\Users\%USERNAME%\AppData\Local\asuka-curl\bin\curl.exe
 set CURRENT_VERSION=0.0.2
 set VERSION=%CURRENT_VERSION%
 set POWERSHELL_VERSION=7.2.1
@@ -15,18 +15,17 @@ if not exist "C:\Users\%USERNAME%\AppData\Local\asuka" (
     mkdir "C:\Users\%USERNAME%\AppData\Local\asuka"
 )
 
-:: Check if asuka folder exists
+:: Check if asuka-curl folder exists
 if not exist "C:\Users\%USERNAME%\AppData\Local\asuka-curl" (
     mkdir "C:\Users\%USERNAME%\AppData\Local\asuka-curl"
 )
 
-:: Check for curl at the system level
-if not exist "C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.exe" (
-    :: curl is not found using powershell to download curl to the user's local directory
+:: Check for curl
+if not exist "%ASUKA_CURL%" (
+    :: curl is not found, using powershell to download curl to the user's local directory
     echo "Curl is not installed on this system. Downloading..."
-    powershell -command "(New-Object Net.WebClient).DownloadFile('https://curl.se/windows/dl-7.81.0_1/curl-7.81.0_1-win64-mingw.zip', 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip')"
+    powershell -command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/Joshua-Noakes1/asuka/main/curl/curl.zip', 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip')"
     powershell -command "Expand-Archive -LiteralPath 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip' 'C:\Users\%USERNAME%\AppData\Local\asuka-curl'"
-    powershell -command "Move-Item -Path 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl-7.81.0-win64-mingw\curl.exe' -Destination 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.exe'"
     powershell -command "Remove-Item -Path 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip'"
     echo "Curl has been installed."
     pause
@@ -53,6 +52,7 @@ echo ------------------------------------------------------------------
 echo:
 echo 1. Launch Powershell
 echo:
+echo 97. Kill all Asuka processes
 echo 98. Reset Asuka
 echo 99. Exit
 echo:
@@ -70,7 +70,7 @@ if %CHOICE%==1 (
         %ASUKA_CURL% -kSL -o "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
         cls
         echo "Unzipping Powershell %POWERSHELL_VERSION%"
-        powershell -command "Expand-Archive -LiteralPath C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip C:\Users\%USERNAME%\AppData\Local\asuka\ps7 "
+        powershell -command "Expand-Archive -Force -LiteralPath C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip C:\Users\%USERNAME%\AppData\Local\asuka\ps7 "
         del /f "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip"
         move "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh.exe" "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe"
         cls
@@ -81,9 +81,14 @@ if %CHOICE%==1 (
     start /d "C:\Users\%USERNAME%\AppData\Local\asuka\" C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe
     goto main
 )
+if %CHOICE%==97 (
+    :: kill all instances of asuka - Nooooo don't turn me into fanta rei, pop- 
+    taskkill /f /im pwsh-auska.exe
+    goto main
+)
 if %CHOICE%==98 (
     :: kill all instances of Asuka - Nooooo don't turn me into fanta rei, pop- 
-    taskkill /f /im "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe"
+    taskkill /f /im pwsh-auska.exe
     rmdir /s /q "C:\Users\%USERNAME%\AppData\Local\asuka"
     mkdir "C:\Users\%USERNAME%\AppData\Local\asuka"
     goto main
@@ -93,5 +98,3 @@ if %CHOICE%==99 (
     exit /b 0
 )
 goto main
-
-:: Utilitiy functions
