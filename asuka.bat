@@ -3,30 +3,33 @@
 
 :: set environment variables for Asuka
 set ASUKA_HOME=C:\Users\%USERNAME%\AppData\Local\asuka
-set ASUKA_CURL=C:\Users\%USERNAME%\AppData\Local\asuka-curl\bin\curl.exe
-set CURRENT_VERSION=0.0.2
+set ASUKA_CURL=%ASUKA_HOME%-curl\bin\curl.exe
+set CURRENT_VERSION=0.0.3
 set VERSION=%CURRENT_VERSION%
 set POWERSHELL_VERSION=7.2.1
 
 title Asuka - %CURRENT_VERSION%
 
 :: Check if asuka folder exists
-if not exist "C:\Users\%USERNAME%\AppData\Local\asuka" (
-    mkdir "C:\Users\%USERNAME%\AppData\Local\asuka"
+if not exist "%ASUKA_HOME%" (
+    mkdir "%ASUKA_HOME%"
 )
 
 :: Check if asuka-curl folder exists
-if not exist "C:\Users\%USERNAME%\AppData\Local\asuka-curl" (
-    mkdir "C:\Users\%USERNAME%\AppData\Local\asuka-curl"
+if not exist "%ASUKA_HOME%-curl" (
+    mkdir "%ASUKA_HOME%-curl"
 )
 
 :: Check for curl
 if not exist "%ASUKA_CURL%" (
     :: curl is not found, using powershell to download curl to the user's local directory
     echo "Curl is not installed on this system. Downloading..."
-    powershell -command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/Joshua-Noakes1/asuka/main/curl/curl.zip', 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip')"
-    powershell -command "Expand-Archive -LiteralPath 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip' 'C:\Users\%USERNAME%\AppData\Local\asuka-curl'"
-    powershell -command "Remove-Item -Path 'C:\Users\%USERNAME%\AppData\Local\asuka-curl\curl.zip'"
+    powershell -command "[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12; [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/Joshua-Noakes1/asuka/main/curl/curl.zip', '%ASUKA_HOME%-curl\curl.zip')"
+    cls
+    echo "Extracting curl..."
+    powershell -command "Expand-Archive -LiteralPath '%ASUKA_HOME%-curl\curl.zip' '%ASUKA_HOME%-curl'"
+    powershell -command "Remove-Item -Path '%ASUKA_HOME%-curl\curl.zip'"
+    cls
     echo "Curl has been installed."
     pause
 )
@@ -43,7 +46,7 @@ if not %CURRENT_VERSION%==%VERSION% (
 
 :: main menu
 :main
-cd "C:\Users\%USERNAME%\AppData\Local\asuka"
+cd "%ASUKA_HOME%"
 cls
 echo ------------------------------------------------------------------
 echo    "If you've lived long enough, you learn to live with death"
@@ -62,23 +65,23 @@ if %CHOICE%==1 (
     cls
 
     :: check if powershellv7 is installed
-    if not exist "C:\Users\%USERNAME%\AppData\Local\asuka\ps7" (
-        mkdir "C:\Users\%USERNAME%\AppData\Local\asuka\ps7"
+    if not exist "%ASUKA_HOME%\ps7" (
+        mkdir "%ASUKA_HOME%\ps7"
     )
-    if not exist "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe" (
+    if not exist "%ASUKA_HOME%\ps7\pwsh-auska.exe" (
         echo "Downloading Powershell %POWERSHELL_VERSION%"
-        %ASUKA_CURL% -kSL -o "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
+        %ASUKA_CURL% -kSL -o "%ASUKA_HOME%\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
         cls
-        echo "Unzipping Powershell %POWERSHELL_VERSION%"
-        powershell -command "Expand-Archive -Force -LiteralPath C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip C:\Users\%USERNAME%\AppData\Local\asuka\ps7 "
-        del /f "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip"
-        move "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh.exe" "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe"
+        echo "Extracting Powershell %POWERSHELL_VERSION%"
+        powershell -command "Expand-Archive -Force -LiteralPath %ASUKA_HOME%\powershell.zip %ASUKA_HOME%\ps7"
+        powershell -command "Remove-Item -Path '%ASUKA_HOME%\powershell.zip'"
+        move "%ASUKA_HOME%\ps7\pwsh.exe" "%ASUKA_HOME%\ps7\pwsh-auska.exe"
         cls
         echo "Powershell %POWERSHELL_VERSION% has been installed"
     )
 
     :: launch powershell
-    start /d "C:\Users\%USERNAME%\AppData\Local\asuka\" C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe
+    start /d "%ASUKA_HOME%\" %ASUKA_HOME%\ps7\pwsh-auska.exe
     goto main
 )
 if %CHOICE%==97 (
@@ -89,8 +92,8 @@ if %CHOICE%==97 (
 if %CHOICE%==98 (
     :: kill all instances of Asuka - Nooooo don't turn me into fanta rei, pop- 
     taskkill /f /im pwsh-auska.exe
-    rmdir /s /q "C:\Users\%USERNAME%\AppData\Local\asuka"
-    mkdir "C:\Users\%USERNAME%\AppData\Local\asuka"
+    rmdir /s /q "%ASUKA_HOME%"
+    mkdir "%ASUKA_HOME%"
     goto main
 )
 if %CHOICE%==99 ( 
