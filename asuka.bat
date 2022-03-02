@@ -35,12 +35,14 @@ if not exist "%ASUKA_CURL%" (
 )
 
 :: Check for update
-@for /f %%R in ('curl -sSL https://raw.githubusercontent.com/joshua-noakes1/asuka/main/VERSION') do ( Set VERSION=%%R )
+@for /f %%R in ('curl -skSL https://raw.githubusercontent.com/joshua-noakes1/asuka/main/VERSION') do ( Set VERSION=%%R )
 if not %CURRENT_VERSION%==%VERSION% (
     echo "Asuka is out of date. Updating to %VERSION%"
     %ASUKA_CURL% -kSL -o "asuka.bat" "https://raw.githubusercontent.com/joshua-noakes1/asuka/main/dist/asuka.png"
-    echo "Asuka has been updated. Please run Asuka again."
+    cls
+    echo "Asuka is now running version %VERSION%."
     pause
+    start /d "%~dp0" /i asuka.bat
     exit /b 2
 ) 
 
