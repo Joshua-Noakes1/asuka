@@ -4,8 +4,9 @@
 :: set environment variables for Asuka
 set ASUKA_HOME=C:\Users\%USERNAME%\AppData\Local\asuka
 set CURRENT_VERSION=0.0.2
-set VERSION=0.0.2
+set VERSION=%CURRENT_VERSION%
 set POWERSHELL_VERSION=7.2.1
+title Asuka - %CURRENT_VERSION%
 
 :: Check for curl at the system level
 if not exist "C:\Windows\system32\curl.exe" (
@@ -24,7 +25,7 @@ if not exist "C:\Users\%USERNAME%\AppData\Local\asuka" (
 @for /f %%R in ('curl -sSL https://raw.githubusercontent.com/joshua-noakes1/asuka/main/VERSION') do ( Set VERSION=%%R )
 if not %CURRENT_VERSION%==%VERSION% (
     echo "Asuka is out of date. Updating to %VERSION%"
-    curl -sSL -o "asuka.bat" "https://raw.githubusercontent.com/joshua-noakes1/asuka/main/dist/asuka.png" :: bypass fortiguard
+    curl -kSL -o "asuka.bat" "https://raw.githubusercontent.com/joshua-noakes1/asuka/main/dist/asuka.png" :: bypass fortiguard
     echo "Asuka has been updated. Please run Asuka again."
     pause
     exit /b 2
@@ -55,10 +56,10 @@ if %CHOICE%==1 (
     )
     if not exist "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe" (
         echo "Downloading Powershell %POWERSHELL_VERSION%"
-        curl -sSL -o "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
+        curl -kSL -o "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip" "https://github.com/PowerShell/PowerShell/releases/download/v%POWERSHELL_VERSION%/PowerShell-%POWERSHELL_VERSION%-win-x64.zip"
         cls
         echo "Unzipping Powershell %POWERSHELL_VERSION%"
-        call :unzip "C:\Users\%USERNAME%\AppData\Local\asuka\ps7" "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip"
+        powershell -command "Expand-Archive -LiteralPath C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip C:\Users\%USERNAME%\AppData\Local\asuka\ps7 "
         del /f "C:\Users\%USERNAME%\AppData\Local\asuka\powershell.zip"
         move "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh.exe" "C:\Users\%USERNAME%\AppData\Local\asuka\ps7\pwsh-auska.exe"
         cls
@@ -83,18 +84,3 @@ if %CHOICE%==99 (
 goto main
 
 :: Utilitiy functions
-:: Unzip https://superuser.com/a/1314429
-:unzip <ExtractTo> <newzipfile> 
-set vbs="%temp%\_.vbs"
-if exist %vbs% del /f /q %vbs%
->%vbs%  echo Set fso = CreateObject("Scripting.FileSystemObject")
->>%vbs% echo If NOT fso.FolderExists(%1) Then
->>%vbs% echo fso.CreateFolder(%1)
->>%vbs% echo End If
->>%vbs% echo set objShell = CreateObject("Shell.Application")
->>%vbs% echo set FilesInZip=objShell.NameSpace(%2).items
->>%vbs% echo objShell.NameSpace(%1).CopyHere(FilesInZip)
->>%vbs% echo Set fso = Nothing
->>%vbs% echo Set objShell = Nothing
-cscript //nologo %vbs%
-if exist %vbs% del /f /q %vbs%
