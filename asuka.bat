@@ -4,7 +4,7 @@
 :: set environment variables for Asuka
 set ASUKA_HOME=C:\Users\%USERNAME%\AppData\Local\asuka
 set ASUKA_CURL=%ASUKA_HOME%-curl\bin\curl.exe
-set CURRENT_VERSION=0.0.3
+set CURRENT_VERSION=0.0.4
 set VERSION=%CURRENT_VERSION%
 set POWERSHELL_VERSION=7.2.1
 
@@ -54,6 +54,7 @@ echo        - Asuka Langley.
 echo ------------------------------------------------------------------
 echo:
 echo 1. Launch Powershell
+echo 2. Install Brave Browser
 echo:
 echo 97. Kill all Asuka processes
 echo 98. Reset Asuka
@@ -84,6 +85,17 @@ if %CHOICE%==1 (
     start /d "%ASUKA_HOME%\" %ASUKA_HOME%\ps7\pwsh-auska.exe
     goto main
 )
+if %CHOICE%==2 ( 
+    :: Download Brave Browser
+    if not exist "%ASUKA_HOME%\brave\brave.exe" (
+        echo "Downloading Brave Browser"
+        echo "Downloading Brave Browser"
+        %ASUKA_CURL% -kSL -o "%ASUKA_HOME%\temp\brave.exe" "https://brave.com/download/latest/win64"
+    )
+    :: Launch Brave Installer
+    start /d "%ASUKA_HOME%\temp" "%ASUKA_HOME%\temp\brave.exe"
+)
+:: Util ::
 if %CHOICE%==97 (
     :: kill all instances of asuka - Nooooo don't turn me into fanta rei, pop- 
     taskkill /f /im pwsh-auska.exe
