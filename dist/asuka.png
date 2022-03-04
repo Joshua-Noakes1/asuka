@@ -4,7 +4,7 @@
 :: set environment variables for Asuka
 set ASUKA_HOME=C:\Users\%USERNAME%\AppData\Local\asuka
 set ASUKA_CURL=%ASUKA_HOME%-curl\bin\curl.exe
-set CURRENT_VERSION=0.0.4
+set CURRENT_VERSION=0.0.41
 set VERSION=%CURRENT_VERSION%
 set POWERSHELL_VERSION=7.2.1
 
@@ -90,7 +90,7 @@ if %CHOICE%==2 (
     if not exist "%ASUKA_HOME%\brave\brave.exe" (
         echo "Downloading Brave Browser"
         echo "Downloading Brave Browser"
-        %ASUKA_CURL% -kSL -o "%ASUKA_HOME%\temp\brave.exe" "https://brave.com/download/latest/win64"
+        %ASUKA_CURL% -kSL -o "%ASUKA_HOME%\temp\brave.exe" "https://laptop-updates.brave.com/latest/winx64"
     )
     :: Launch Brave Installer
     start /d "%ASUKA_HOME%\temp" "%ASUKA_HOME%\temp\brave.exe"
